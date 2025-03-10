@@ -1,6 +1,5 @@
 package com.darpan.realtimemultiplayerquiz.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class Quiz {
     @Column(name = "quiz_code", unique = true, nullable = false)
     private int quizCode;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "quiz_name")
     private String quizName;
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -36,7 +35,6 @@ public class Quiz {
         this.questions = questions;
         this.players = players;
     }
-
 
     public int getId() {
         return id;
@@ -76,5 +74,16 @@ public class Quiz {
 
     public void setPlayers(List<Player> players) {
         this.players = players;
+    }
+
+    @Override
+    public String toString() {
+        return "Quiz{" +
+                "id=" + id +
+                ", quizCode=" + quizCode +
+                ", quizName='" + quizName + '\'' +
+                ", questions=" + questions +
+                ", players=" + players +
+                '}';
     }
 }

@@ -1,7 +1,6 @@
 package com.darpan.realtimemultiplayerquiz.model;
 
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Table(name = "question")
@@ -13,7 +12,9 @@ public class Question {
     @Column(name = "question_id")
     private int id;
 
+    @Column(name = "question_title")
     private String questionTitle;
+    @Column(name = "correct_answer")
     private String correctAnswer;
 
     @ElementCollection
@@ -72,5 +73,16 @@ public class Question {
 
     public void setQuiz(Quiz quiz) {
         this.quiz = quiz;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", questionTitle='" + questionTitle + '\'' +
+                ", correctAnswer='" + correctAnswer + '\'' +
+                ", options=" + options +
+                ", quiz=" + quiz +
+                '}';
     }
 }

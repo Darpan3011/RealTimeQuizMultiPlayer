@@ -36,4 +36,10 @@ public class QuizController {
         QuizDTO q =  quizService.getQuizById(id);
         return new ResponseEntity<>(q, HttpStatus.OK);
     }
+
+    @GetMapping("/code/{id}")
+    public ResponseEntity getQuizByCode(@PathVariable int id){
+        QuizDTO q =  quizService.getQuizByCode(id);
+        return new ResponseEntity<>(q, HttpStatus.OK);
+    }
 }
