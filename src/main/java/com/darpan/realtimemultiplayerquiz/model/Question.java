@@ -1,5 +1,6 @@
 package com.darpan.realtimemultiplayerquiz.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Question {
     @Column(name = "correct_answer")
     private String correctAnswer;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> options;
 
     @ManyToOne

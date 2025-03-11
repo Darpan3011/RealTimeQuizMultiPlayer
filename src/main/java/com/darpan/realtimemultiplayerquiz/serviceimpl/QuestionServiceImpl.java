@@ -2,8 +2,11 @@ package com.darpan.realtimemultiplayerquiz.serviceimpl;
 
 import com.darpan.realtimemultiplayerquiz.dao.QuestionDAO;
 import com.darpan.realtimemultiplayerquiz.dto.QuestionDTO;
+import com.darpan.realtimemultiplayerquiz.dto.QuestionWebSocketDTO;
 import com.darpan.realtimemultiplayerquiz.service.QuestionService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -24,4 +27,9 @@ public class QuestionServiceImpl implements QuestionService {
 
             questionDAO.addQuestion(question);
         }
+
+    @Override
+    public List<QuestionWebSocketDTO> getAllQuestions(int quizId) {
+        return questionDAO.getAllQuestions(quizId);
+    }
 }
