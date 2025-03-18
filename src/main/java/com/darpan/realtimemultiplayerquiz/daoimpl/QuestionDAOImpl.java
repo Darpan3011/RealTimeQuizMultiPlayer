@@ -44,7 +44,6 @@ public class QuestionDAOImpl implements QuestionDAO {
 
     @Override
     public List<QuestionWebSocketDTO> getAllQuestions(int quizId) {
-        System.out.println(quizId);
         try(Session session = sessionFactory.openSession()) {
             session.beginTransaction();
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -54,7 +53,7 @@ public class QuestionDAOImpl implements QuestionDAO {
             List<Question> questions = session.createQuery(cq).list();
             session.getTransaction().commit();
 
-            return questions.stream().map(x-> new QuestionWebSocketDTO(x.getQuestionTitle(), x.getOptions(), x.getId())).toList();
+            return questions.stream().map(x-> new QuestionWebSocketDTO(x.getQuestionTitle(), x.getOptions(), x.getId(), x.getCorrectAnswer())).toList();
         }
     }
 }
