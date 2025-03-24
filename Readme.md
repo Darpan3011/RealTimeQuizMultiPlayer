@@ -1,69 +1,68 @@
-# Real-Time Quiz Management System
+# Real-Time Multiplayer Quiz
 
-## Project Overview
+This project is a **real-time quiz management system** where users can:
+- **Create an account**
+- **Create a quiz with a unique quiz code**
+- **Join a quiz using the quiz code**
+- **Attempt the quiz in real-time using WebSockets**
 
-This is a real-time quiz management system where users can:
-- Create an account
-- Create quizzes and set a unique quiz code
-- Join a quiz using the quiz code
-- View and answer quiz questions
+## 🚀 Features
+- **User Authentication** (Not implemented yet)
+- **Quiz Creation & Management**
+- **WebSocket-based real-time quiz participation**
+- **STOMP WebSockets for live communication**
 
-## Features
+---
 
-- User authentication (account creation & login)
-- Quiz creation and unique quiz code generation
-- Players can join quizzes using a quiz code
-- Real-time question display and answer submission
-- Score tracking
+## 📌 **Tech Stack**
+- **Backend:** Java, Spring Boot
+- **WebSockets:** STOMP with SockJS
+- **Database:** MySQL / PostgreSQL (change in `application.properties`)
+- **Frontend:** Any WebSocket-supported client (Postman, WebSocket King)
 
-## Database Schema
+---
 
-The project includes the following tables:
+## 🔧 **Setup Instructions**
+### 1️⃣ Clone the Repo  
+```sh
+git clone https://github.com/your-repo/realtimemultiplayerquiz.git
+cd realtimemultiplayerquiz
+```
 
-### 1. `player`
-Stores player information.
+### 2️⃣ Configure Database  
+Update **`src/main/resources/application.properties`** with your database settings:
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/quiz_db
+spring.datasource.username=root
+spring.datasource.password=root
+spring.jpa.hibernate.ddl-auto=update
+```
 
-| Column  | Description        |
-|---------|--------------------|
-| `id`    | Unique player ID   |
-| `name`  | Player's name      |
-| `score` | Player's score     |
+### 3️⃣ Run the Application  
+```sh
+mvn spring-boot:run
+```
+The server will start at **http://localhost:8081**.
 
-### 2. `player_quiz`
-Maps players to quizzes.
+---
 
-| Column      | Description                 |
-|------------|-----------------------------|
-| `player_id` | References `player.id`     |
-| `quiz_id`   | References `quiz.quiz_id`  |
+## 🌐 **WebSocket API Endpoints**
+| Action          | Destination        | Payload Example | Response |
+|----------------|------------------|----------------|-----------|
+| **Connect**    | `ws://localhost:8081/ws` | _N/A_ | WebSocket connection established |
+| **Subscribe**  | `/topic/quiz` | _N/A_ | Receives quiz updates |
+| **Fetch Quiz** | `/rtquiz/fetch` | `{}` | `Quiz questions will be sent!` |
+| **Submit Answers** | `/rtquiz/submit` | `{"quizCode": 1234, "playerName": "John", "answers": ["A", "B"]}` | `Answers submitted!` |
 
-### 3. `quiz`
-Stores quiz details.
+---
 
-| Column      | Description              |
-|------------|--------------------------|
-| `quiz_id`   | Unique quiz ID           |
-| `quiz_code` | Unique code for the quiz |
-| `quiz_name` | Quiz name                |
+## 🛠 **Testing WebSockets with Postman**
+1. Open **Postman** → Go to **WebSocket Request**
+2. Connect to **`ws://localhost:8081/ws`**
+3. **Subscribe** to `/topic/quiz`:
+   ```
+   SUBSCRIBE
+   id:sub-1
+   destination:/topic/quiz
 
-### 4. `question`
-Stores quiz questions.
-
-| Column          | Description              |
-|---------------|--------------------------|
-| `question_id`  | Unique question ID       |
-| `question_title` | Question text           |
-| `correct_answer` | Correct answer         |
-| `quiz_id`      | References `quiz.quiz_id` |
-
-### 5. `question_options`
-Stores possible answers for each question.
-
-| Column                | Description                     |
-|----------------------|---------------------------------|
-| `question_question_id` | References `question.question_id` |
-| `options`            | Answer options                  |
-
-### Prerequisites
-- Java Springboot
-- MySQL
+   
