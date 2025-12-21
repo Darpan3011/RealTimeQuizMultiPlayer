@@ -1,66 +1,61 @@
 package com.darpan.realtimemultiplayerquiz.controller;
 
+import com.darpan.realtimemultiplayerquiz.dao.PlayerRepository;
+import com.darpan.realtimemultiplayerquiz.dao.QuizAttemptRepository;
+import com.darpan.realtimemultiplayerquiz.dao.QuizRepository;
+import com.darpan.realtimemultiplayerquiz.dto.LeaderboardDTO;
 import com.darpan.realtimemultiplayerquiz.dto.QuestionWebSocketDTO;
+import com.darpan.realtimemultiplayerquiz.model.Player;
+import com.darpan.realtimemultiplayerquiz.model.Quiz;
+import com.darpan.realtimemultiplayerquiz.model.QuizAttempt;
 import com.darpan.realtimemultiplayerquiz.service.QuestionService;
+import com.darpan.realtimemultiplayerquiz.service.QuizService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class QuizWebSocket {
 
-    @Autowired
-    private QuestionService questionService;
-
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-
-    @Autowired
-    private com.darpan.realtimemultiplayerquiz.dao.QuizAttemptRepository quizAttemptRepository;
-
-    @Autowired
-    private com.darpan.realtimemultiplayerquiz.dao.PlayerRepository playerRepository;
-
-    @Autowired
-    private com.darpan.realtimemultiplayerquiz.dao.QuizRepository quizRepository;
-
-    @Autowired
-    private com.darpan.realtimemultiplayerquiz.service.QuizService quizService;
-
+    private final QuestionService questionService;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final QuizAttemptRepository quizAttemptRepository;
+    private final PlayerRepository playerRepository;
+    private final QuizRepository quizRepository;
+    private final QuizService quizService;
     private final Map<Integer, Map<String, String>> playerAnswers = new HashMap<>();
 
     // We don't use @SendTo here because we want to send to a specific quiz topic
     // based on the ID
     @MessageMapping("/fetch/{quizCode}")
-    public void fetchQuizQuestions(@org.springframework.messaging.handler.annotation.DestinationVariable int quizCode) {
-        com.darpan.realtimemultiplayerquiz.model.Quiz quiz = quizRepository.findByQuizCode(quizCode)
-                .orElse(null);
+    public void fetchQuizQuestions(@DestinationVariable int quizCode) {
+        Quiz quiz = quizRepository.findByQuizCode(quizCode).orElse(null);
 
         if (quiz != null) {
             List<QuestionWebSocketDTO> questions = questionService.getAllQuestions(quiz.getId());
             // Send to specific topic for this quiz
             messagingTemplate.convertAndSend("/topic/quiz/" + quizCode, questions);
         } else {
-            System.err.println("Quiz not found for code: " + quizCode);
             messagingTemplate.convertAndSend("/topic/quiz/" + quizCode, "Error: Quiz not found");
         }
     }
 
     @MessageMapping("/submit/{quizCode}/{playerName}")
-    @org.springframework.transaction.annotation.Transactional
-    public void submitAnswers(@org.springframework.messaging.handler.annotation.DestinationVariable int quizCode,
-            @org.springframework.messaging.handler.annotation.DestinationVariable String playerName,
-            List<String> answers) {
+    @Transactional
+    public void submitAnswers(@DestinationVariable int quizCode, @DestinationVariable String playerName, List<String> answers) {
 
         // First, get the quiz by code
-        com.darpan.realtimemultiplayerquiz.model.Quiz quiz = quizRepository.findByQuizCode(quizCode)
-                .orElse(null);
+        Quiz quiz = quizRepository.findByQuizCode(quizCode).orElse(null);
 
         if (quiz == null) {
             messagingTemplate.convertAndSend("/topic/quiz/" + quizCode, "Error: Quiz not found.");
@@ -76,37 +71,32 @@ public class QuizWebSocket {
         }
 
         if (answers.size() != questions.size()) {
-            messagingTemplate.convertAndSend("/topic/quiz/" + quizCode,
-                    "Error: Answer count mismatch for player " + playerName);
+            messagingTemplate.convertAndSend("/topic/quiz/" + quizCode, "Error: Answer count mismatch for player " + playerName);
             return;
         }
 
         int correctCount = 0;
         for (int i = 0; i < questions.size(); i++) {
             // Basic check - in a real app ensure null safety
-            if (questions.get(i).getCorrectAnswer() != null
-                    && questions.get(i).getCorrectAnswer().equalsIgnoreCase(answers.get(i))) {
+            if (questions.get(i).getCorrectAnswer() != null && questions.get(i).getCorrectAnswer().equalsIgnoreCase(answers.get(i))) {
                 correctCount++;
             }
         }
 
         // Save Result to DB
         try {
-            com.darpan.realtimemultiplayerquiz.model.Player player = playerRepository.findByName(playerName)
-                    .orElseGet(() -> {
-                        com.darpan.realtimemultiplayerquiz.model.Player newPlayer = new com.darpan.realtimemultiplayerquiz.model.Player();
-                        newPlayer.setName(playerName);
-                        newPlayer.setScore(0); // overall score, maybe optional
-                        return playerRepository.save(newPlayer);
-                    });
+            Player player = playerRepository.findByName(playerName).orElseGet(() -> {
+                Player newPlayer = new Player();
+                newPlayer.setName(playerName);
+                newPlayer.setScore(0); // overall score, maybe optional
+                return playerRepository.save(newPlayer);
+            });
 
-            com.darpan.realtimemultiplayerquiz.model.QuizAttempt attempt = new com.darpan.realtimemultiplayerquiz.model.QuizAttempt(
-                    player, quiz, correctCount, questions.size());
+            QuizAttempt attempt = new QuizAttempt(player, quiz, correctCount, questions.size());
             quizAttemptRepository.save(attempt);
 
             // Broadcast Leaderboard
-            List<com.darpan.realtimemultiplayerquiz.dto.LeaderboardDTO> leaderboard = quizService
-                    .getLeaderboard(quizCode);
+            List<LeaderboardDTO> leaderboard = quizService.getLeaderboard(quizCode);
             messagingTemplate.convertAndSend("/topic/leaderboard/" + quizCode, leaderboard);
 
         } catch (Exception e) {
@@ -121,7 +111,6 @@ public class QuizWebSocket {
         playerAnswers.get(quizCode).put(playerName, correctCount + "/" + questions.size());
 
         // Send results to all players in the session
-        messagingTemplate.convertAndSend("/topic/quiz/" + quizCode,
-                "Player " + playerName + " Score: " + correctCount + "/" + questions.size());
+        messagingTemplate.convertAndSend("/topic/quiz/" + quizCode, "Player " + playerName + " Score: " + correctCount + "/" + questions.size());
     }
 }

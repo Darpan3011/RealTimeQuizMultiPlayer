@@ -7,21 +7,18 @@ import com.darpan.realtimemultiplayerquiz.dto.QuizDTO;
 import com.darpan.realtimemultiplayerquiz.model.Quiz;
 import com.darpan.realtimemultiplayerquiz.model.QuizAttempt;
 import com.darpan.realtimemultiplayerquiz.service.QuizService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class QuizServiceImpl implements QuizService {
 
     private final QuizRepository quizRepository;
     private final QuizAttemptRepository quizAttemptRepository;
-
-    public QuizServiceImpl(QuizRepository quizRepository, QuizAttemptRepository quizAttemptRepository) {
-        this.quizRepository = quizRepository;
-        this.quizAttemptRepository = quizAttemptRepository;
-    }
 
     @Override
     public void saveQuiz(Quiz quiz) {

@@ -7,20 +7,17 @@ import com.darpan.realtimemultiplayerquiz.dto.QuestionWebSocketDTO;
 import com.darpan.realtimemultiplayerquiz.model.Question;
 import com.darpan.realtimemultiplayerquiz.model.Quiz;
 import com.darpan.realtimemultiplayerquiz.service.QuestionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final QuizRepository quizRepository;
-
-    public QuestionServiceImpl(QuestionRepository questionRepository, QuizRepository quizRepository) {
-        this.questionRepository = questionRepository;
-        this.quizRepository = quizRepository;
-    }
 
     @Override
     public void createQuestion(QuestionDTO questionDTO) {

@@ -3,6 +3,7 @@ package com.darpan.realtimemultiplayerquiz.controller;
 import com.darpan.realtimemultiplayerquiz.dto.QuizDTO;
 import com.darpan.realtimemultiplayerquiz.model.Quiz;
 import com.darpan.realtimemultiplayerquiz.service.QuizService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,13 +12,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/quiz")
+@RequiredArgsConstructor
 public class QuizController {
 
-    private QuizService quizService;
-
-    public QuizController(QuizService quizService) {
-        this.quizService = quizService;
-    }
+    private final QuizService quizService;
 
     @PostMapping
     public ResponseEntity addQuiz(@RequestBody Quiz quiz) {

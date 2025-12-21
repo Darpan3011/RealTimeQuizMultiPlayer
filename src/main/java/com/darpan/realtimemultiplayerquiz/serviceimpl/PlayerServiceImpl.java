@@ -6,20 +6,17 @@ import com.darpan.realtimemultiplayerquiz.dto.PlayerDTO;
 import com.darpan.realtimemultiplayerquiz.model.Player;
 import com.darpan.realtimemultiplayerquiz.model.Quiz;
 import com.darpan.realtimemultiplayerquiz.service.PlayerService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
     private final QuizRepository quizRepository;
-
-    public PlayerServiceImpl(PlayerRepository playerRepository, QuizRepository quizRepository) {
-        this.playerRepository = playerRepository;
-        this.quizRepository = quizRepository;
-    }
 
     @Override
     public void addPlayer(PlayerDTO playerDTO) {
