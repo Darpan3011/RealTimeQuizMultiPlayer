@@ -20,26 +20,33 @@ public class QuizController {
     }
 
     @PostMapping
-    public ResponseEntity addQuiz(@RequestBody Quiz quiz){
+    public ResponseEntity addQuiz(@RequestBody Quiz quiz) {
         quizService.saveQuiz(quiz);
         return new ResponseEntity<>("Quiz added successfully", HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity getAllQuiz(){
-        List<QuizDTO> all =  quizService.getAllQuiz();
+    public ResponseEntity getAllQuiz() {
+        List<QuizDTO> all = quizService.getAllQuiz();
         return new ResponseEntity<>(all, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getQuizById(@PathVariable int id){
-        QuizDTO q =  quizService.getQuizById(id);
+    public ResponseEntity getQuizById(@PathVariable int id) {
+        QuizDTO q = quizService.getQuizById(id);
         return new ResponseEntity<>(q, HttpStatus.OK);
     }
 
     @GetMapping("/code/{id}")
-    public ResponseEntity getQuizByCode(@PathVariable int id){
-        QuizDTO q =  quizService.getQuizByCode(id);
+    public ResponseEntity getQuizByCode(@PathVariable int id) {
+        QuizDTO q = quizService.getQuizByCode(id);
         return new ResponseEntity<>(q, HttpStatus.OK);
+    }
+
+    @GetMapping("/leaderboard/{quizCode}")
+    public ResponseEntity<List<com.darpan.realtimemultiplayerquiz.dto.LeaderboardDTO>> getLeaderboard(
+            @PathVariable int quizCode) {
+        List<com.darpan.realtimemultiplayerquiz.dto.LeaderboardDTO> leaderboard = quizService.getLeaderboard(quizCode);
+        return new ResponseEntity<>(leaderboard, HttpStatus.OK);
     }
 }

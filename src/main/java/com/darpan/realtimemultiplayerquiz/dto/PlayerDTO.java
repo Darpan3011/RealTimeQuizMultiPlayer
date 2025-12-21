@@ -1,5 +1,12 @@
 package com.darpan.realtimemultiplayerquiz.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Setter
+@Getter
+@NoArgsConstructor
 public class PlayerDTO {
 
     private int quizCode;
@@ -10,22 +17,4 @@ public class PlayerDTO {
         this.name = name;
     }
 
-    public PlayerDTO() {
-    }
-
-    public int getQuizCode() {
-        return quizCode;
-    }
-
-    public void setQuizCode(int quizCode) {
-        this.quizCode = quizCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

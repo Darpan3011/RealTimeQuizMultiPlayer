@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+/FE/.vscode/
+/FE/.angular/
+/FE/dist/
+/FE/node_modules/

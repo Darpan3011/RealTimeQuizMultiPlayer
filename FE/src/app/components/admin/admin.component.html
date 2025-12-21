@@ -1,0 +1,148 @@
+<div class="card-base" style="max-width: 600px;">
+    <div class="text-center mb-2">
+        <h1>Admin Dashboard</h1>
+        <p class="text-muted">Manage your quizzes and questions</p>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button [class.active]="activeTab === 'create'" (click)="selectTab('create')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14" />
+            </svg>
+            Create Quiz
+        </button>
+        <button [class.active]="activeTab === 'add'" (click)="selectTab('add')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+            </svg>
+            Add Questions
+        </button>
+    </div>
+
+    <!-- Alert Messages -->
+    <div *ngIf="message" class="alert" [ngClass]="statusType">
+        <svg *ngIf="statusType === 'success'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        <svg *ngIf="statusType === 'error'" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        {{ message }}
+    </div>
+
+    <!-- Create Quiz Flow -->
+    <div *ngIf="activeTab === 'create'" class="fade-in">
+        <div class="form-group">
+            <label>Quiz Name</label>
+            <input [(ngModel)]="quizName" placeholder="e.g. Science Challenge">
+        </div>
+        <div class="form-group">
+            <label>Access Code</label>
+            <input [(ngModel)]="quizCode" type="number" placeholder="e.g. 101">
+        </div>
+        <button class="w-full" (click)="createQuiz()" [disabled]="!quizName || !quizCode">
+            Create Quiz
+        </button>
+    </div>
+
+    <!-- Add Question Flow -->
+    <div *ngIf="activeTab === 'add'" class="fade-in">
+        <div class="form-group">
+            <label>Target Quiz Code</label>
+            <input [(ngModel)]="targetQuizCode" type="number" placeholder="Enter Quiz Code">
+        </div>
+
+        <div class="form-group">
+            <label>Question Title</label>
+            <input [(ngModel)]="questionTitle" placeholder="e.g. What is the capital of France?">
+        </div>
+
+        <div class="options-grid">
+            <div class="form-group">
+                <label>Option 1</label>
+                <input [(ngModel)]="option1" placeholder="Choice A">
+            </div>
+            <div class="form-group">
+                <label>Option 2</label>
+                <input [(ngModel)]="option2" placeholder="Choice B">
+            </div>
+            <div class="form-group">
+                <label>Option 3</label>
+                <input [(ngModel)]="option3" placeholder="Choice C">
+            </div>
+            <div class="form-group">
+                <label>Option 4</label>
+                <input [(ngModel)]="option4" placeholder="Choice D">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Correct Answer (Exact Text)</label>
+            <input [(ngModel)]="correctAnswer" placeholder="Paste the correct option here">
+        </div>
+
+        <button class="w-full" (click)="addQuestion()" [disabled]="!targetQuizCode || !questionTitle || !correctAnswer">
+            Add Question
+        </button>
+    </div>
+</div>
+
+<style>
+    .tab-nav {
+        display: flex;
+        gap: 10px;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 6px;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+    }
+
+    .tab-nav button {
+        flex: 1;
+        background: transparent;
+        color: var(--text-muted);
+        border-radius: 12px;
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    .tab-nav button.active {
+        background: var(--card-bg);
+        color: var(--primary);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .options-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 1rem;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

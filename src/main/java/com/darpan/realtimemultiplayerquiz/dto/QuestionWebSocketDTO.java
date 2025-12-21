@@ -1,8 +1,15 @@
 package com.darpan.realtimemultiplayerquiz.dto;
 
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.List;
 
+@Setter
+@Getter
+@NoArgsConstructor
 public class QuestionWebSocketDTO {
 
     private int id;
@@ -17,38 +24,4 @@ public class QuestionWebSocketDTO {
         this.correctAnswer = correctAnswer;
     }
 
-    public QuestionWebSocketDTO() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getQuestionTitle() {
-        return questionTitle;
-    }
-
-    public void setQuestionTitle(String questionTitle) {
-        this.questionTitle = questionTitle;
-    }
-
-    public List<String> getOptions() {
-        return options;
-    }
-
-    public void setOptions(List<String> options) {
-        this.options = options;
-    }
-
-    public String getCorrectAnswer() {
-        return correctAnswer;
-    }
-
-    public void setCorrectAnswer(String correctAnswer) {
-        this.correctAnswer = correctAnswer;
-    }
 }

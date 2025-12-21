@@ -14,4 +14,6 @@ public interface QuizService {
     QuizDTO getQuizById(int id);
 
     QuizDTO getQuizByCode(int quizCode);
+
+    List<com.darpan.realtimemultiplayerquiz.dto.LeaderboardDTO> getLeaderboard(int quizCode);
 }

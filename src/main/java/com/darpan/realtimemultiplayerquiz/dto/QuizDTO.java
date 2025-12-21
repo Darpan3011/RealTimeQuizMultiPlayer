@@ -1,5 +1,10 @@
 package com.darpan.realtimemultiplayerquiz.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Setter
+@Getter
 public class QuizDTO {
 
     private int quizId;
@@ -12,27 +17,4 @@ public class QuizDTO {
         this.quizName = quizName;
     }
 
-    public int getQuizId() {
-        return quizId;
-    }
-
-    public void setQuizId(int quizId) {
-        this.quizId = quizId;
-    }
-
-    public int getQuizCode() {
-        return quizCode;
-    }
-
-    public void setQuizCode(int quizCode) {
-        this.quizCode = quizCode;
-    }
-
-    public String getQuizName() {
-        return quizName;
-    }
-
-    public void setQuizName(String quizName) {
-        this.quizName = quizName;
-    }
 }

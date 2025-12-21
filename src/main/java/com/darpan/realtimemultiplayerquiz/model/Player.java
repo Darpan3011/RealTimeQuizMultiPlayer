@@ -1,9 +1,15 @@
 package com.darpan.realtimemultiplayerquiz.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
+@Setter
+@Getter
+@NoArgsConstructor
 @Table(name = "player")
 @Entity
 public class Player {
@@ -25,9 +31,6 @@ public class Player {
     )
     private List<Quiz> quizzes;
 
-    public Player() {
-    }
-
     public Player(int id, String name, int score, List<Quiz> quizzes) {
         this.id = id;
         this.name = name;
@@ -35,35 +38,4 @@ public class Player {
         this.quizzes = quizzes;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public List<Quiz> getQuizzes() {
-        return quizzes;
-    }
-
-    public void setQuizzes(List<Quiz> quizzes) {
-        this.quizzes = quizzes;
-    }
 }
