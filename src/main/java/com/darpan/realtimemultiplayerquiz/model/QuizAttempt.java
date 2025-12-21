@@ -26,6 +26,7 @@ public class QuizAttempt {
 
     private int score;
 
+    @Column(name = "total_questions")
     private int totalQuestions;
 
     private LocalDateTime timestamp;

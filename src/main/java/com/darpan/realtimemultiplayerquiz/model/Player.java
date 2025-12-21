@@ -21,20 +21,13 @@ public class Player {
     @Column(unique = true, nullable = false)
     private String name;
 
-    private int score;
-
     @ManyToMany
-    @JoinTable(
-            name = "player_quiz",
-            joinColumns = @JoinColumn(name = "player_id"),
-            inverseJoinColumns = @JoinColumn(name = "quiz_id")
-    )
+    @JoinTable(name = "player_quiz", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "quiz_id"))
     private List<Quiz> quizzes;
 
-    public Player(int id, String name, int score, List<Quiz> quizzes) {
+    public Player(int id, String name, List<Quiz> quizzes) {
         this.id = id;
         this.name = name;
-        this.score = score;
         this.quizzes = quizzes;
     }
 

@@ -49,10 +49,14 @@ export class AdminComponent {
         this.statusType = 'success';
         this.message = 'Quiz Created Successfully!';
         this.targetQuizCode = this.quizCode; // Auto-fill for questions
+
+        // Auto-clear message after 3 seconds
+        setTimeout(() => this.message = '', 4000);
       },
       error: (err) => {
         this.statusType = 'error';
-        this.message = 'Error creating quiz';
+        this.message = 'Error creating quiz: ' + (err.error?.message || err.message);
+        setTimeout(() => this.message = '', 5000);
       }
     });
   }
@@ -77,29 +81,35 @@ export class AdminComponent {
           questionTitle: this.questionTitle,
           options: [this.option1, this.option2, this.option3, this.option4],
           correctAnswer: this.correctAnswer,
-          quizId: quiz.quizId
+          quizId: quiz.quizId  // Backend QuizDTO has 'quizId' field
         };
 
         this.quizService.addQuestion(questionData).subscribe({
           next: () => {
             this.statusType = 'success';
             this.message = 'Question Added!';
+            // Clear form
             this.questionTitle = '';
             this.option1 = '';
             this.option2 = '';
             this.option3 = '';
             this.option4 = '';
             this.correctAnswer = '';
+
+            // Auto-clear message after 3 seconds
+            setTimeout(() => this.message = '', 3000);
           },
           error: (err) => {
             this.statusType = 'error';
-            this.message = 'Error adding question';
+            this.message = 'Error adding question: ' + (err.error?.message || err.message);
+            setTimeout(() => this.message = '', 5000);
           }
         });
       },
       error: (err) => {
         this.statusType = 'error';
         this.message = 'Quiz Code not found';
+        setTimeout(() => this.message = '', 5000);
       }
     });
   }
