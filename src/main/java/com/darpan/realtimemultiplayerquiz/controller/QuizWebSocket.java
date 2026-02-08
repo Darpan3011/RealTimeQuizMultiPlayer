@@ -79,10 +79,14 @@ public class QuizWebSocket {
 
         int correctCount = 0;
         for (int i = 0; i < questions.size(); i++) {
-            // Basic check - in a real app ensure null safety
-            if (questions.get(i).getCorrectAnswer() != null
-                    && questions.get(i).getCorrectAnswer().equalsIgnoreCase(answers.get(i))) {
-                correctCount++;
+            // Get the correct answer text using the index
+            QuestionWebSocketDTO question = questions.get(i);
+            if (question.getCorrectAnswerIndex() >= 0
+                    && question.getCorrectAnswerIndex() < question.getOptions().size()) {
+                String correctAnswerText = question.getOptions().get(question.getCorrectAnswerIndex());
+                if (correctAnswerText != null && correctAnswerText.equalsIgnoreCase(answers.get(i))) {
+                    correctCount++;
+                }
             }
         }
 

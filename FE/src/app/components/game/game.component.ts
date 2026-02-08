@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { WebSocketService } from '../../services/web-socket.service';
 import { QuizService } from '../../services/quiz.service';
+import { AuthService } from '../../services/auth.service';
 
 interface Question {
   questionTitle: string;
@@ -32,12 +33,28 @@ export class GameComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private wsService: WebSocketService,
-    private quizService: QuizService
+    private quizService: QuizService,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
     this.quizCode = this.route.snapshot.paramMap.get('code') || '';
-    this.playerName = this.route.snapshot.queryParamMap.get('player') || 'Anonymous';
+
+    // 1. Try query param
+    const queryPlayer = this.route.snapshot.queryParamMap.get('player');
+
+    if (queryPlayer) {
+      this.playerName = queryPlayer;
+    } else {
+      // 2. Try authenticated user
+      const user = this.authService.getCurrentUser();
+      if (user && user.email) {
+        this.playerName = user.email.split('@')[0];
+      } else {
+        // 3. Fallback
+        this.playerName = 'Anonymous';
+      }
+    }
 
     if (this.quizCode) {
       this.setupSubscriptions();

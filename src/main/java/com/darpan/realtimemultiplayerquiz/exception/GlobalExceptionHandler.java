@@ -17,75 +17,75 @@ import java.util.stream.Collectors;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(QuizNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleQuizNotFoundException(
-            QuizNotFoundException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "Quiz Not Found",
-                ex.getMessage());
-        error.setPath(request.getDescription(false).replace("uri=", ""));
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
+        @ExceptionHandler(QuizNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleQuizNotFoundException(
+                        QuizNotFoundException ex, WebRequest request) {
+                ErrorResponse error = new ErrorResponse(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Quiz Not Found",
+                                ex.getMessage());
+                error.setPath(request.getDescription(false).replace("uri=", ""));
+                return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
 
-    @ExceptionHandler(PlayerNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handlePlayerNotFoundException(
-            PlayerNotFoundException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "Player Not Found",
-                ex.getMessage());
-        error.setPath(request.getDescription(false).replace("uri=", ""));
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
+        @ExceptionHandler(PlayerNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handlePlayerNotFoundException(
+                        PlayerNotFoundException ex, WebRequest request) {
+                ErrorResponse error = new ErrorResponse(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Player Not Found",
+                                ex.getMessage());
+                error.setPath(request.getDescription(false).replace("uri=", ""));
+                return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
 
-    @ExceptionHandler(QuestionNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleQuestionNotFoundException(
-            QuestionNotFoundException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "Question Not Found",
-                ex.getMessage());
-        error.setPath(request.getDescription(false).replace("uri=", ""));
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
+        @ExceptionHandler(QuestionNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleQuestionNotFoundException(
+                        QuestionNotFoundException ex, WebRequest request) {
+                ErrorResponse error = new ErrorResponse(
+                                HttpStatus.NOT_FOUND.value(),
+                                "Question Not Found",
+                                ex.getMessage());
+                error.setPath(request.getDescription(false).replace("uri=", ""));
+                return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+        }
 
-    @ExceptionHandler(InvalidQuizCodeException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidQuizCodeException(
-            InvalidQuizCodeException ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Invalid Quiz Code",
-                ex.getMessage());
-        error.setPath(request.getDescription(false).replace("uri=", ""));
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
+        @ExceptionHandler(RuntimeException.class)
+        public ResponseEntity<ErrorResponse> handleRuntimeException(
+                        RuntimeException ex, WebRequest request) {
+                ErrorResponse error = new ErrorResponse(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Bad Request",
+                                ex.getMessage());
+                error.setPath(request.getDescription(false).replace("uri=", ""));
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(
-            MethodArgumentNotValidException ex, WebRequest request) {
-        String errors = ex.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ErrorResponse> handleValidationException(
+                        MethodArgumentNotValidException ex, WebRequest request) {
+                String errors = ex.getBindingResult()
+                                .getFieldErrors()
+                                .stream()
+                                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                                .collect(Collectors.joining(", "));
 
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.BAD_REQUEST.value(),
-                "Validation Failed",
-                errors);
-        error.setPath(request.getDescription(false).replace("uri=", ""));
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
+                ErrorResponse error = new ErrorResponse(
+                                HttpStatus.BAD_REQUEST.value(),
+                                "Validation Failed",
+                                errors);
+                error.setPath(request.getDescription(false).replace("uri=", ""));
+                return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+        }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGlobalException(
-            Exception ex, WebRequest request) {
-        ErrorResponse error = new ErrorResponse(
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
-                ex.getMessage());
-        error.setPath(request.getDescription(false).replace("uri=", ""));
-        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ErrorResponse> handleGlobalException(
+                        Exception ex, WebRequest request) {
+                ErrorResponse error = new ErrorResponse(
+                                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                                "Internal Server Error",
+                                ex.getMessage());
+                error.setPath(request.getDescription(false).replace("uri=", ""));
+                return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 }

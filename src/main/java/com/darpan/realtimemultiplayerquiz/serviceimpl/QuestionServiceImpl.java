@@ -33,7 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         Question question = new Question();
         question.setQuestionTitle(questionDTO.getQuestionTitle());
-        question.setCorrectAnswer(questionDTO.getCorrectAnswer());
+        question.setCorrectAnswerIndex(questionDTO.getCorrectAnswerIndex());
         question.setOptions(questionDTO.getOptions());
         question.setQuiz(quiz);
 
@@ -51,7 +51,7 @@ public class QuestionServiceImpl implements QuestionService {
                 x.getQuestionTitle(),
                 x.getOptions(),
                 x.getId(),
-                x.getCorrectAnswer())).toList();
+                x.getCorrectAnswerIndex())).toList();
     }
 
     @Override

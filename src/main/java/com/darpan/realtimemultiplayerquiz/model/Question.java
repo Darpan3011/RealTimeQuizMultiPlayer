@@ -23,8 +23,8 @@ public class Question {
 
     @Column(name = "question_title")
     private String questionTitle;
-    @Column(name = "correct_answer")
-    private String correctAnswer;
+    @Column(name = "correct_answer_index")
+    private int correctAnswerIndex;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> options;
@@ -33,10 +33,10 @@ public class Question {
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    public Question(int id, String questionTitle, String correctAnswer, List<String> options, Quiz quiz) {
+    public Question(int id, String questionTitle, int correctAnswerIndex, List<String> options, Quiz quiz) {
         this.id = id;
         this.questionTitle = questionTitle;
-        this.correctAnswer = correctAnswer;
+        this.correctAnswerIndex = correctAnswerIndex;
         this.options = options;
         this.quiz = quiz;
     }

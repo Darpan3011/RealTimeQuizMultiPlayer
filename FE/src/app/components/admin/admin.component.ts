@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { QuizService } from '../../services/quiz.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-admin',
@@ -12,7 +13,7 @@ import { QuizService } from '../../services/quiz.service';
   styleUrl: './admin.component.scss'
 })
 export class AdminComponent {
-  activeTab: 'create' | 'add' = 'create';
+  activeTab: any = 'create';
   statusType: 'success' | 'error' = 'success';
   // Create Quiz
   quizName: string = '';
@@ -25,15 +26,34 @@ export class AdminComponent {
   option2: string = '';
   option3: string = '';
   option4: string = '';
-  correctAnswer: string = '';
+  correctAnswerIndex: number | null = null;
+
+  // View Results
+  resultsQuizCode: number | null = null;
+  leaderboardData: any[] = [];
+  showingResults: boolean = false;
+
+  // Settings
+  mfaEnabled: boolean = false;
+  currentUser: any = null;
 
   message: string = '';
 
-  constructor(private quizService: QuizService) { }
+  constructor(private quizService: QuizService, private authService: AuthService) {
+    this.currentUser = this.authService.getCurrentUser();
+    // In a real app, you'd fetch the actual MFA status from backend
+    // For now we'll assume it matches the user's initial state or default to false
+  }
 
-  selectTab(tab: 'create' | 'add') {
+  selectTab(tab: any) {
     this.activeTab = tab;
     this.message = '';
+    this.showingResults = false;
+
+    if (tab === 'settings') {
+      // Refresh user data to get latest MFA status
+      this.currentUser = this.authService.getCurrentUser();
+    }
   }
 
   createQuiz() {
@@ -62,7 +82,7 @@ export class AdminComponent {
   }
 
   addQuestion() {
-    if (!this.targetQuizCode || !this.questionTitle || !this.correctAnswer) return;
+    if (!this.targetQuizCode || !this.questionTitle || this.correctAnswerIndex === null) return;
 
     // First get the Quiz ID (internal) from the code, or if backend handles code directly
     // The previous backend implementation of QuestionDTO expects `quizId` (internal database ID).
@@ -80,7 +100,7 @@ export class AdminComponent {
         const questionData = {
           questionTitle: this.questionTitle,
           options: [this.option1, this.option2, this.option3, this.option4],
-          correctAnswer: this.correctAnswer,
+          correctAnswerIndex: this.correctAnswerIndex,
           quizId: quiz.quizId  // Backend QuizDTO has 'quizId' field
         };
 
@@ -94,7 +114,7 @@ export class AdminComponent {
             this.option2 = '';
             this.option3 = '';
             this.option4 = '';
-            this.correctAnswer = '';
+            this.correctAnswerIndex = null;
 
             // Auto-clear message after 3 seconds
             setTimeout(() => this.message = '', 3000);
@@ -112,5 +132,56 @@ export class AdminComponent {
         setTimeout(() => this.message = '', 5000);
       }
     });
+  }
+
+  viewResults() {
+    if (!this.resultsQuizCode) return;
+
+    this.quizService.getLeaderboard(this.resultsQuizCode).subscribe({
+      next: (data) => {
+        this.leaderboardData = data;
+        this.showingResults = true;
+        if (data.length === 0) {
+          this.statusType = 'error';
+          this.message = 'No results found for this quiz code';
+          setTimeout(() => this.message = '', 3000);
+        }
+      },
+      error: (err) => {
+        this.statusType = 'error';
+        this.message = 'Quiz not found or no results available';
+        this.showingResults = false;
+        setTimeout(() => this.message = '', 3000);
+      }
+    });
+  }
+
+  toggleMfa() {
+    if (!this.currentUser) return;
+
+    // We're toggling, so if it's currently enabled, we disable it, and vice versa
+    // But since we're using a checkbox bound to mfaEnabled, the value is already the new desired state
+    // Actually, let's implement explicit buttons for better UX or handle the toggle
+
+    const email = this.currentUser.email;
+    const action = this.mfaEnabled ? this.authService.enableMfa(email) : this.authService.disableMfa(email);
+
+    action.subscribe({
+      next: (res: any) => {
+        this.statusType = 'success';
+        this.message = res.message;
+        setTimeout(() => this.message = '', 3000);
+      },
+      error: (err: any) => {
+        this.statusType = 'error';
+        this.message = err.error?.message || 'Failed to update MFA settings';
+        this.mfaEnabled = !this.mfaEnabled; // Revert change on error
+        setTimeout(() => this.message = '', 3000);
+      }
+    });
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

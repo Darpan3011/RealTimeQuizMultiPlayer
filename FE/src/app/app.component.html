@@ -4,8 +4,20 @@
       <span class="vivid">RealTime</span>Quiz
     </a>
     <div class="nav-links">
-      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-      <a routerLink="/admin" routerLinkActive="active">Admin</a>
+      <!-- Show Login/Home if NOT authenticated -->
+      <a *ngIf="!authService.isAuthenticated()" routerLink="/login" routerLinkActive="active">Login</a>
+      <a *ngIf="!authService.isAuthenticated()" routerLink="/register" routerLinkActive="active">Register</a>
+
+      <!-- Show Dashboard for Users -->
+      <a *ngIf="authService.isAuthenticated() && !authService.hasRole('ADMIN')" routerLink="/dashboard"
+        routerLinkActive="active">Dashboard</a>
+
+      <!-- Show Admin for Admins -->
+      <a *ngIf="authService.isAuthenticated() && authService.hasRole('ADMIN')" routerLink="/admin"
+        routerLinkActive="active">Admin</a>
+
+      <!-- Logout Button -->
+      <a *ngIf="authService.isAuthenticated()" (click)="logout()" style="cursor: pointer;">Logout</a>
     </div>
   </div>
 </nav>
